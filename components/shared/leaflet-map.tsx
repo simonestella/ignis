@@ -27,9 +27,20 @@ function TileLayerSwitcher({ isDark }: Readonly<{ isDark: boolean }>) {
   );
 }
 
+function MobileFixLayer() {
+  const map = useMap();
+  useEffect(() => {
+    // Disable Leaflet's custom tap handler so iOS single-tap opens popups
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const t = (map as any).tap;
+    if (t) t.disable();
+  }, [map]);
+  return null;
+}
+
 function markerStyle(v: Volcano): { fill: string; stroke: string; radius: number } {
-  // Radius 5–16 based on elevation (0 m → 5, ≥5 500 m → 16)
-  const radius = Math.max(5, Math.min(16, 5 + Math.round(Math.max(0, v.elevation_m ?? 0) / 500)));
+  // Radius 8–18 based on elevation — min 8 for mobile touch targets
+  const radius = Math.max(8, Math.min(18, 8 + Math.round(Math.max(0, v.elevation_m ?? 0) / 500)));
 
   const abbr = (v.obsAbbr ?? "").toUpperCase().trim();
   if (!abbr) return { fill: "#A07858", stroke: "#7A5A3A", radius };
@@ -180,6 +191,7 @@ export default function LeafletMap() {
           style={{ width: "100%", height: "100%" }}
           worldCopyJump
         >
+          <MobileFixLayer />
           <TileLayerSwitcher isDark={isDark} />
 
           {displayed.map((v) => {
@@ -261,9 +273,9 @@ export default function LeafletMap() {
           </p>
           <div className="flex flex-col gap-2.5">
             {([
-              { size: 10, label: "< 500 m",    sublabel: t("map.legend_low_elev") },
+              { size: 8,  label: "< 500 m",    sublabel: t("map.legend_low_elev") },
               { size: 13, label: "~2 500 m",   sublabel: t("map.legend_mid_elev") },
-              { size: 16, label: "≥ 5 000 m",  sublabel: t("map.legend_high_elev") },
+              { size: 18, label: "≥ 5 000 m",  sublabel: t("map.legend_high_elev") },
             ]).map(({ size, label, sublabel }) => (
               <div key={label} className="flex items-center gap-3">
                 <span
@@ -294,13 +306,15 @@ export default function LeafletMap() {
               { color: "#FFA800", label: "YVO",  sub: t("map.legend_yvo") },
               { color: "#FF4400", label: "MVO",  sub: t("map.legend_mvo") },
             ]).map(({ color, label, sub }) => (
-              <div key={label} className="flex items-center gap-2.5">
+              <div key={label} className="flex items-start gap-2.5">
                 <span
-                  className="w-3 h-3 rounded-full flex-shrink-0"
+                  className="w-3 h-3 rounded-full flex-shrink-0 mt-[3px]"
                   style={{ background: color }}
                 />
-                <span className="text-[12px] font-semibold text-[var(--ink-2)] w-10 flex-shrink-0">{label}</span>
-                <span className="text-[11px] text-[var(--muted)] truncate">{sub}</span>
+                <div className="min-w-0">
+                  <div className="text-[12px] font-semibold text-[var(--ink-2)] leading-tight">{label}</div>
+                  <div className="text-[10px] text-[var(--muted)] leading-tight">{sub}</div>
+                </div>
               </div>
             ))}
           </div>
