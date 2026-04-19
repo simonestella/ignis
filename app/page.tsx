@@ -1,16 +1,18 @@
 import { HeroSection } from "@/components/sections/hero-section";
 import { MapSection } from "@/components/sections/map-section";
 import { BackToTop } from "@/components/shared/back-to-top";
+import { PageLoader } from "@/components/shared/page-loader";
 
 export default function Home() {
   return (
     <main className="container-shell">
+      <PageLoader />
       <HeroSection />
       <MapSection />
 
       <BackToTop />
 
-      <footer className="mt-16 pt-8 border-t border-[var(--card-border-solid)] text-center">
+      <footer className="mt-16 pb-10 pt-8 border-t border-[var(--card-border-solid)] text-center">
         <p className="text-xs text-[var(--muted)]">
           © {new Date().getFullYear()} Ignis — Volcano data from{" "}
           <a

@@ -4,30 +4,27 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useTheme } from "next-themes";
 import { useLocale } from "@/providers/locale-provider";
-import { getVolcanoes, getUniqueCountries, getUniqueRegions, type Volcano } from "@/data/volcanoes";
+import { useVolcanoData } from "@/providers/volcano-data-provider";
+import { getUniqueCountries, getUniqueRegions } from "@/data/volcanoes";
 
 export function HeroSection() {
   const { t, locale, setLocale } = useLocale();
   const { resolvedTheme, setTheme } = useTheme();
-  const [stats, setStats] = useState<{ volcanoes: number; countries: number; regions: number } | null>(null);
+  const { volcanoes, loading } = useVolcanoData();
+  const [mounted, setMounted] = useState(false);
 
-  useEffect(() => {
-    getVolcanoes()
-      .then((data: Volcano[]) => {
-        setStats({
-          volcanoes: data.length,
-          countries: getUniqueCountries(data).length,
-          regions: getUniqueRegions(data).length,
-        });
-      })
-      .catch(() => {});
-  }, []);
+  useEffect(() => { setMounted(true); }, []);
+
+  const stats = volcanoes.length > 0 ? {
+    volcanoes: volcanoes.length,
+    countries: getUniqueCountries(volcanoes).length,
+    regions: getUniqueRegions(volcanoes).length,
+  } : null;
 
   return (
     <header className="pt-3 sm:pt-5 pb-8">
       {/* Top bar */}
       <div className="flex items-center gap-2 py-2 mb-10 sm:mb-12">
-        {/* Portfolio link */}
         <a
           href="https://simonestella.github.io/portfolio/"
           target="_blank"
@@ -45,29 +42,21 @@ export function HeroSection() {
           </svg>
         </a>
 
-        {/* Language toggle */}
         <div className="flex items-center rounded-full border border-[var(--card-border-solid)] overflow-hidden flex-shrink-0">
           {(["en", "it"] as const).map((lang) => (
             <button
               key={lang}
               onClick={() => setLocale(lang)}
               className={`px-2.5 py-1.5 text-xs font-semibold transition-all duration-200 ${
-                locale === lang
-                  ? "text-white"
-                  : "text-[var(--muted)] hover:text-[var(--ink)]"
+                locale === lang ? "text-white" : "text-[var(--muted)] hover:text-[var(--ink)]"
               }`}
-              style={
-                locale === lang
-                  ? { background: "linear-gradient(135deg, var(--primary), var(--primary-end))" }
-                  : {}
-              }
+              style={locale === lang ? { background: "linear-gradient(135deg, var(--primary), var(--primary-end))" } : {}}
             >
               {lang.toUpperCase()}
             </button>
           ))}
         </div>
 
-        {/* Theme toggle */}
         <button
           onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
           className="w-8 h-8 flex-shrink-0 rounded-full border border-[var(--card-border-solid)] flex items-center justify-center text-[var(--muted)] hover:text-[var(--ink)] hover:border-[var(--primary)] transition-all duration-200"
@@ -86,14 +75,13 @@ export function HeroSection() {
         </button>
       </div>
 
-      {/* Hero content */}
+      {/* Hero */}
       <motion.div
         className="flex flex-col items-center text-center gap-5"
         initial={{ opacity: 0, y: 24 }}
-        animate={{ opacity: 1, y: 0 }}
+        animate={mounted ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
         transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
       >
-        {/* Logo / title */}
         <div className="glass-card px-6 sm:px-10 py-5 sm:py-7 inline-flex flex-col items-center gap-2">
           <span className="text-5xl sm:text-6xl" aria-hidden>🌋</span>
           <div>
@@ -113,32 +101,25 @@ export function HeroSection() {
           {t("hero.subtitle")}
         </p>
 
-        {/* Stats */}
-        <motion.div
-          className="grid grid-cols-3 gap-3 w-full max-w-sm"
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-        >
+        <div className="grid grid-cols-3 gap-3 w-full max-w-sm">
           {[
             { key: "hero.stat_volcanoes", value: stats?.volcanoes },
             { key: "hero.stat_countries", value: stats?.countries },
             { key: "hero.stat_regions",   value: stats?.regions },
           ].map(({ key, value }) => (
-            <div
-              key={key}
-              className="glass-card p-3 flex flex-col items-center gap-1"
-            >
+            <div key={key} className="glass-card p-3 flex flex-col items-center gap-1">
               <span
                 className="text-xl sm:text-2xl font-black tabular-nums"
                 style={{ color: "var(--primary)" }}
               >
-                {value ?? "—"}
+                {loading ? (
+                  <span className="inline-block w-8 h-6 rounded animate-pulse" style={{ background: "var(--card-border)" }} />
+                ) : (value ?? "—")}
               </span>
               <span className="text-[10px] sm:text-xs text-[var(--muted)] font-medium">{t(key)}</span>
             </div>
           ))}
-        </motion.div>
+        </div>
       </motion.div>
     </header>
   );

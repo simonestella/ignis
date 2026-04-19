@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import { AppProviders } from "@/providers/theme-provider";
 import { LocaleProvider } from "@/providers/locale-provider";
+import { VolcanoDataProvider } from "@/providers/volcano-data-provider";
 import { CustomCursor } from "@/components/shared/custom-cursor";
 import "./globals.css";
 
@@ -68,13 +69,15 @@ export default function RootLayout({
       <body className={`${geist.variable} antialiased`}>
         <AppProviders>
           <LocaleProvider>
-            <CustomCursor />
-            <div className="bg-orb bg-orb-1" aria-hidden />
-            <div className="bg-orb bg-orb-2" aria-hidden />
-            <div className="bg-orb bg-orb-3" aria-hidden />
-            <div className="mesh-bg">
-              {children}
-            </div>
+            <VolcanoDataProvider>
+              <CustomCursor />
+              <div className="bg-orb bg-orb-1" aria-hidden />
+              <div className="bg-orb bg-orb-2" aria-hidden />
+              <div className="bg-orb bg-orb-3" aria-hidden />
+              <div className="mesh-bg">
+                {children}
+              </div>
+            </VolcanoDataProvider>
           </LocaleProvider>
         </AppProviders>
       </body>
