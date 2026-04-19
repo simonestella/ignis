@@ -253,38 +253,58 @@ export default function LeafletMap() {
       </div>
 
       {/* Legend */}
-      <div className="flex items-center gap-x-5 gap-y-2 flex-wrap text-[11px] text-[var(--muted)]">
-        <span className="font-semibold text-[var(--ink-3)]">{t("map.legend_size")}:</span>
-        <span className="flex items-center gap-1">
-          <span className="rounded-full inline-block flex-shrink-0" style={{ width: 10, height: 10, background: "var(--metal)" }} /> ~0 m
-        </span>
-        <span className="flex items-center gap-1">
-          <span className="rounded-full inline-block flex-shrink-0" style={{ width: 13, height: 13, background: "var(--metal)" }} /> ~2 500 m
-        </span>
-        <span className="flex items-center gap-1">
-          <span className="rounded-full inline-block flex-shrink-0" style={{ width: 16, height: 16, background: "var(--metal)" }} /> ≥5 000 m
-        </span>
+      <div className="glass-card p-4 sm:p-5 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+        {/* Size column */}
+        <div>
+          <p className="text-[11px] font-bold uppercase tracking-wider text-[var(--muted)] mb-3">
+            {t("map.legend_size")}
+          </p>
+          <div className="flex flex-col gap-2.5">
+            {([
+              { size: 10, label: "< 500 m",    sublabel: t("map.legend_low_elev") },
+              { size: 13, label: "~2 500 m",   sublabel: t("map.legend_mid_elev") },
+              { size: 16, label: "≥ 5 000 m",  sublabel: t("map.legend_high_elev") },
+            ]).map(({ size, label, sublabel }) => (
+              <div key={label} className="flex items-center gap-3">
+                <span
+                  className="rounded-full flex-shrink-0"
+                  style={{ width: size, height: size, background: "var(--primary)", opacity: 0.75 }}
+                />
+                <div className="min-w-0">
+                  <span className="text-[12px] font-semibold text-[var(--ink-2)]">{label}</span>
+                  <span className="text-[11px] text-[var(--muted)] ml-1.5">{sublabel}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
 
-        <span className="w-px h-4 bg-[var(--card-border-solid)] mx-1 hidden sm:inline-block" aria-hidden />
-
-        <span className="font-semibold text-[var(--ink-3)]">{t("map.legend_color")}:</span>
-        <span className="flex items-center gap-1">
-          <span className="w-3 h-3 rounded-full inline-block flex-shrink-0" style={{ background: "#E8650A" }} />
-          {t("map.legend_monitored")}
-        </span>
-        <span className="flex items-center gap-1">
-          <span className="w-3 h-3 rounded-full inline-block flex-shrink-0" style={{ background: "#A07858" }} />
-          {t("map.legend_unmonitored")}
-        </span>
-        <span className="flex items-center gap-1.5">
-          <span className="w-3 h-3 rounded-full inline-block flex-shrink-0" style={{ background: "#FF2800" }} />AVO
-        </span>
-        <span className="flex items-center gap-1.5">
-          <span className="w-3 h-3 rounded-full inline-block flex-shrink-0" style={{ background: "#FF6200" }} />HVO
-        </span>
-        <span className="flex items-center gap-1.5">
-          <span className="w-3 h-3 rounded-full inline-block flex-shrink-0" style={{ background: "#FF8C00" }} />CVO
-        </span>
+        {/* Color column */}
+        <div>
+          <p className="text-[11px] font-bold uppercase tracking-wider text-[var(--muted)] mb-3">
+            {t("map.legend_color_title")}
+          </p>
+          <div className="flex flex-col gap-2">
+            {([
+              { color: "#A07858", label: t("map.legend_unmonitored"),  sub: t("map.legend_unmonitored_sub") },
+              { color: "#E8650A", label: t("map.legend_monitored"),    sub: t("map.legend_monitored_sub") },
+              { color: "#FF2800", label: "AVO",  sub: t("map.legend_avo") },
+              { color: "#FF6200", label: "HVO",  sub: t("map.legend_hvo") },
+              { color: "#FF8C00", label: "CVO",  sub: t("map.legend_cvo") },
+              { color: "#FFA800", label: "YVO",  sub: t("map.legend_yvo") },
+              { color: "#FF4400", label: "MVO",  sub: t("map.legend_mvo") },
+            ]).map(({ color, label, sub }) => (
+              <div key={label} className="flex items-center gap-2.5">
+                <span
+                  className="w-3 h-3 rounded-full flex-shrink-0"
+                  style={{ background: color }}
+                />
+                <span className="text-[12px] font-semibold text-[var(--ink-2)] w-10 flex-shrink-0">{label}</span>
+                <span className="text-[11px] text-[var(--muted)] truncate">{sub}</span>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );

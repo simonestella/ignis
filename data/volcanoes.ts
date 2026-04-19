@@ -42,28 +42,21 @@ export function getContinent(subregion: string): string {
   const s = (subregion ?? "").toLowerCase();
   if (!s) return "Other";
   if (s.includes("antarct")) return "Antarctica";
-  if (s.includes("africa")) return "Africa";
-  if (s.includes("south america")) return "South America";
-  if (
-    s.includes("alaska") || s.includes("aleutian") || s.includes("hawaii") ||
-    s.includes("cascade") || s.includes("mexico") || s.includes("central america") ||
-    s.includes("west indie") || s.includes("caribbean") || s.includes("canada") ||
-    s.includes("coterminous") || s.includes("yellowstone")
-  ) return "North America";
+  if (s.includes("africa") || s.includes("canary") || s.includes("cape verde") || s.includes("ethiopia") || s.includes("eritrea") || s.includes("kenya") || s.includes("tanzania") || s.includes("uganda") || s.includes("cameroon") || s.includes("comoros") || s.includes("reunion") || s.includes("madagascar")) return "Africa";
+  if (s.includes("south america") || s.includes("galapagos") || s.includes("chile") || s.includes("peru") || s.includes("ecuador") || s.includes("colombia") || s.includes("argentina") || s.includes("bolivia") || s.includes("venezuela")) return "South America";
+  if (s.includes("alaska") || s.includes("aleutian") || s.includes("hawaii") || s.includes("cascade") || s.includes("mexico") || s.includes("central america") || s.includes("west indie") || s.includes("caribbean") || s.includes("canada") || s.includes("coterminous") || s.includes("yellowstone")) return "North America";
   if (
     s.includes("europe") || s.includes("iceland") || s.includes("arctic") ||
-    s.includes("mediterranean") || s.includes("azores")
+    s.includes("mediterranean") || s.includes("azores") ||
+    s.includes("italy") || s.includes("greece") || s.includes("turkey") ||
+    s.includes("spain") || s.includes("portugal") || s.includes("france") ||
+    s.includes("germany") || s.includes("balkans") || s.includes("scandinavi") ||
+    s.includes("black sea")
   ) return "Europe";
   if (s.includes("atlantic")) return "Atlantic Ocean";
-  if (s.includes("indian ocean")) return "Indian Ocean";
-  if (
-    s.includes("polynesia") || s.includes("new zealand") || s.includes("fiji") ||
-    s.includes("tonga") || s.includes("kermadec") || s.includes("melanesia") ||
-    s.includes("micronesia") || s.includes("australia") || s.includes("vanuatu") ||
-    s.includes("samoa") || s.includes("solomon") || s.includes("papua") ||
-    s.includes("cook island")
-  ) return "Oceania";
-  // Japan, SE Asia, Borneo, Philippines, Kamchatka, Caucasus, Middle East, etc.
+  if (s.includes("indian ocean") || s.includes("red sea")) return "Indian Ocean";
+  if (s.includes("polynesia") || s.includes("new zealand") || s.includes("fiji") || s.includes("tonga") || s.includes("kermadec") || s.includes("melanesia") || s.includes("micronesia") || s.includes("australia") || s.includes("vanuatu") || s.includes("samoa") || s.includes("solomon") || s.includes("papua") || s.includes("cook island")) return "Oceania";
+  // Japan, SE Asia, Borneo, Philippines, Kamchatka, Middle East, etc.
   return "Asia";
 }
 
